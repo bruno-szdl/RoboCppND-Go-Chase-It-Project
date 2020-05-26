@@ -31,8 +31,8 @@ void process_image_callback(const sensor_msgs::Image img){
     // Loop through each pixel in the image and check if there's a bright white one
     int ball_column;
     for(int i = 0; i < img.height; i++){
-        for(int j = 0; j < img.step; j++){
-            if(img.data[i*img.step + j] == white_pixel){
+        for(int j = 0; j < img.width; j++){
+            if(img.data[i*img.step + j*3] == white_pixel && img.data[i*img.step + j*3 + 1] == white_pixel && img.data[i*img.step + j*3 + 2] == white_pixel ){
                 white_pixel_found = true;
                 ball_column = j;
                 break;
@@ -44,20 +44,20 @@ void process_image_callback(const sensor_msgs::Image img){
 
         // Identify if this pixel falls in the left, mid or right side of the image
         // Depending on the white ball position, call the drive_bot function and pass velocities to it
-        if(ball_column < floor(img.step/3)){
-            drive_robot(0, 2);
+        if(ball_column < floor(img.width/3.0)){
+            drive_robot(0.0, 2.0);
         } 
-        else if(ball_column > ceil(img.step*2/3)){
-            drive_robot(0, -2);
+        else if(ball_column > ceil(img.width*2.0/3.0)){
+            drive_robot(0.0, -2.0);
         }
         else{
-            drive_robot(2, 0.0);
+            drive_robot(2.0, 0.0);
         }
 
     }
     // Request a stop when there's no white ball seen by the camera
     else{
-        drive_robot(0, 0);
+        drive_robot(0.0, 0.0);
     }
 }
 
